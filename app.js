@@ -12,7 +12,7 @@ const { cardRoutes } = require('./routes/cards');
 
 app.use((req, res, next) => {
   req.user = {
-    _id: '631aff9a4cc9e9fceef23b39'
+    _id: '631aff9a4cc9e9fceef23b39',
   };
   next();
 });
@@ -24,15 +24,10 @@ app.use(cardRoutes);
 async function main() {
   await mongoose.connect('mongodb://localhost:27017/mestodb', {
     useNewUrlParser: true,
-    useUnifiedTopology: false
+    useUnifiedTopology: false,
   });
 
   await app.listen(PORT);
-
-  console.log(`Сервер запущен на ${PORT} порту`);
-};
+}
 
 main();
-
-
-
