@@ -4,21 +4,21 @@ const createUser = async (req, res) => {
   try {
     const { name, about, avatar } = req.body;
     const user = await new User({ name, about, avatar }).save();
-    res.status(200).send(user);
+    return res.status(200).send(user);
   } catch (err) {
     if (err.name === 'ValidationError') {
-      res.status(400).send({ message: 'Ошибка в запросе' });
+      return res.status(400).send({ message: 'Ошибка в запросе' });
     }
-    res.status(500).send({ message: 'Произошла ошибка на сервере', ...err });
+    return res.status(500).send({ message: 'Произошла ошибка на сервере', ...err });
   }
 };
 
 const getUsers = async (req, res) => {
   try {
     const users = await User.find({});
-    res.status(200).send(users);
+    return res.status(200).send(users);
   } catch (err) {
-    res.status(500).send({ message: 'Произошла ошибка на сервере', ...err });
+    return res.status(500).send({ message: 'Произошла ошибка на сервере', ...err });
   }
 };
 
@@ -45,6 +45,7 @@ const updateProfile = async (req, res) => {
     const user = await User.findByIdAndUpdate(
       userId,
       { name, about },
+      { new: true, runValidators: true },
     );
     return res.status(200).send(user);
   } catch (err) {
@@ -62,6 +63,7 @@ const updateAvatar = async (req, res) => {
     const user = await User.findByIdAndUpdate(
       userId,
       { avatar },
+      { new: true, runValidators: true },
     );
     return res.status(200).send(user);
   } catch (err) {

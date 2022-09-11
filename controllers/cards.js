@@ -5,21 +5,21 @@ const createCard = async (req, res) => {
     const owner = req.user._id;
     const { name, link } = req.body;
     const card = await new Card({ owner, name, link }).save();
-    res.status(200).send(card);
+    return res.status(200).send(card);
   } catch (err) {
     if (err.name === 'ValidationError') {
-      res.status(400).send({ message: 'Ошибка в запросе' });
+      return res.status(400).send({ message: 'Ошибка в запросе' });
     }
-    res.status(500).send({ message: 'Произошла ошибка на сервере', ...err });
+    return res.status(500).send({ message: 'Произошла ошибка на сервере', ...err });
   }
 };
 
 const getCards = async (req, res) => {
   try {
     const cards = await Card.find({});
-    res.status(200).send(cards);
+    return res.status(200).send(cards);
   } catch (err) {
-    res.status(500).send({ message: 'Произошла ошибка на сервере', ...err });
+    return res.status(500).send({ message: 'Произошла ошибка на сервере', ...err });
   }
 };
 
@@ -49,7 +49,7 @@ const putLike = async (res, req) => {
     const like = await Card.findByIdAndUpdate(
       cardId,
       { $addToSet: { likes: req.user._id } },
-      { new: true },
+      { new: true, runValidators: true },
     );
     if (!like) {
       return res.status(404).send({ message: 'Карточка не существует' });
@@ -69,7 +69,7 @@ const deleteLike = async (res, req) => {
     const delLike = await Card.findByIdAndUpdate(
       cardId,
       { $pull: { likes: req.user._id } },
-      { new: true },
+      { new: true, runValidators: true },
     );
     if (!delLike) {
       return res.status(404).send({ message: 'Карточка не существует' });
