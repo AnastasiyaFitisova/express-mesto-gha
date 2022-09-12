@@ -10,6 +10,8 @@ const { userRoutes } = require('./routes/users');
 
 const { cardRoutes } = require('./routes/cards');
 
+const { notFound } = require('./errors/errors');
+
 app.use(express.json());
 
 app.use((req, res, next) => {
@@ -24,7 +26,7 @@ app.use('/users', userRoutes);
 app.use('/cards', cardRoutes);
 
 app.use('*', (req, res) => {
-  res.status(404).send({ message: 'Страница не найдена' });
+  res.status(notFound).send({ message: 'Страница не найдена' });
 });
 
 app.use((err, req, res, next) => {
