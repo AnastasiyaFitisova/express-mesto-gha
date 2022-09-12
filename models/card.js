@@ -4,14 +4,14 @@ const userSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    minlength: 2,
-    maxlength: 30,
+    minlength: [2, 'name must be at least 2 characters'],
+    maxlength: [30, 'name must be max 30 characters'],
   },
   link: {
     type: String,
     required: true,
-    minlength: 2,
-    maxlength: 30,
+    minlength: [2, 'link must be at least 2 characters'],
+    maxlength: [30, 'link must be max 30 characters'],
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
