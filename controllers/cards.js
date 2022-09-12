@@ -29,7 +29,7 @@ const deleteCard = async (req, res) => {
   try {
     const card = await Card.findByIdAndDelete(cardId);
     if (!card) {
-      return res.status(404).send({ message: 'Карточка не существует' });
+      return res.status(400).send({ message: 'Карточка не существует' });
     }
     if (userId !== card.owner.toString()) {
       return res.status(403).send({ message: 'Нет прав на удаление карточки' });
