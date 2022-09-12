@@ -32,7 +32,7 @@ const getUserById = async (req, res) => {
     return res.status(200).send(user);
   } catch (err) {
     if (err.kind === 'ObjectId') {
-      return res.status(400).send({ message: 'ID пользователя невалидный' });
+      return res.status(400).send({ message: 'Ошибка в запросе' });
     }
     return res.status(500).send({ message: 'Произошла ошибка на сервере', ...err });
   }

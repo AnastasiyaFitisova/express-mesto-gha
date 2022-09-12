@@ -36,6 +36,17 @@ app.use((err, req, res, next) => {
   next(err);
 });
 
+app.use((err, req, res, next) => {
+  const { statusCode = 400, message } = err;
+
+  res.status(statusCode).send({
+    message: statusCode === 400
+      ? 'Ошибка в запросе'
+      : message,
+  });
+  next(err);
+});
+
 async function main() {
   await mongoose.connect('mongodb://localhost:27017/mestodb', {
     useNewUrlParser: true,

@@ -37,7 +37,7 @@ const deleteCard = async (req, res) => {
     return res.status(200).send(card);
   } catch (err) {
     if ((err.name === 'ValidationError') || (err.kind === 'ObjectID')) {
-      return res.status(400).send({ message: 'Переданные данные некорректны' });
+      return res.status(400).send({ message: 'Ошибка в запросе' });
     }
     return res.status(500).send({ message: 'Произошла ошибка на сервере', ...err });
   }
