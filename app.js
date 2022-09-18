@@ -26,11 +26,9 @@ app.post('/signin', celebrate({
 
 app.post('/signup', celebrate({
   body: Joi.object().keys({
-    name: Joi.string().required().default('Жак-Ив Кусто').min(2)
-      .max(30),
-    about: Joi.string().required().default('Исследователь').min(2)
-      .max(30),
-    avatar: Joi.string().required().default('https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png').regex(/^(https?:\/\/)?([\w.]+)\.([a-z]{2,6}\.?)(\/[\w.]*)*\/?$/),
+    name: Joi.string().required().min(2).max(30),
+    about: Joi.string().required().min(2).max(30),
+    avatar: Joi.string().required().regex(/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/),
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
   }),
