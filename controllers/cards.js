@@ -1,10 +1,11 @@
 const Card = require('../models/card');
 
-const {
-  badRequest, forbidden, notFound, internalServerError,
-} = require('../errors/errors');
+const BadRequest = require('../errors/BadRequest');
+const Forbidden = require('../errors/Forbidden');
+const NotFound = require('../errors/NotFound');
+const InternalServerError = require('../errors/InternalServerError');
 
-const createCard = async (req, res) => {
+const createCard = async (req, res, next) => {
   try {
     const owner = req.user._id;
     const { name, link } = req.body;
@@ -12,42 +13,42 @@ const createCard = async (req, res) => {
     return res.status(200).send(card);
   } catch (err) {
     if (err.name === 'ValidationError') {
-      return res.status(badRequest).send({ message: 'Ошибка в запросе' });
+      return next(new BadRequest('Ошибка в запросе'));
     }
-    return res.status(internalServerError).send({ message: 'Произошла ошибка на сервере' });
+    return next(new InternalServerError('Произошла ошибка на сервере'));
   }
 };
 
-const getCards = async (req, res) => {
+const getCards = async (req, res, next) => {
   try {
     const cards = await Card.find({});
     return res.status(200).send(cards);
   } catch (err) {
-    return res.status(internalServerError).send({ message: 'Произошла ошибка на сервере' });
+    return next(new InternalServerError('Произошла ошибка на сервере'));
   }
 };
 
-const deleteCard = async (req, res) => {
+const deleteCard = async (req, res, next) => {
   const { cardId } = req.params;
   const userId = req.user._id;
   try {
     const card = await Card.findByIdAndDelete(cardId);
     if (!card) {
-      return res.status(notFound).send({ message: 'Карточка не существует' });
+      return next(new NotFound('Карточка не существует'));
     }
     if (userId !== card.owner.toString()) {
-      return res.status(forbidden).send({ message: 'Нет прав на удаление карточки' });
+      return next(Forbidden('Нет прав на удаление карточки'));
     }
     return res.status(200).send(card);
   } catch (err) {
     if ((err.name === 'ValidationError') || (err.kind === 'ObjectID')) {
-      return res.status(badRequest).send({ message: 'Ошибка в запросе' });
+      return next(new BadRequest('Ошибка в запросе'));
     }
-    return res.status(internalServerError).send({ message: 'Произошла ошибка на сервере' });
+    return next(new InternalServerError('Произошла ошибка на сервере'));
   }
 };
 
-const putLike = async (res, req) => {
+const putLike = async (res, req, next) => {
   try {
     const { cardId } = req.params;
     const like = await Card.findByIdAndUpdate(
@@ -56,18 +57,18 @@ const putLike = async (res, req) => {
       { new: true, runValidators: true },
     );
     if (!like) {
-      return res.status(notFound).send({ message: 'Карточка не существует' });
+      return next(new NotFound('Карточка не существует'));
     }
     return res.status(200).send(like);
   } catch (err) {
     if (err.name === 'CastError') {
-      return res.status(badRequest).send({ message: 'Ошибка в запросе' });
+      return next(new BadRequest('Ошибка в запросе'));
     }
-    return res.status(internalServerError).send({ message: 'Произошла ошибка на сервере' });
+    return next(new InternalServerError('Произошла ошибка на сервере'));
   }
 };
 
-const deleteLike = async (res, req) => {
+const deleteLike = async (res, req, next) => {
   try {
     const { cardId } = req.params;
     const delLike = await Card.findByIdAndUpdate(
@@ -76,14 +77,14 @@ const deleteLike = async (res, req) => {
       { new: true, runValidators: true },
     );
     if (!delLike) {
-      return res.status(notFound).send({ message: 'Карточка не существует' });
+      return next(new NotFound('Карточка не существует'));
     }
     return res.status(200).send(delLike);
   } catch (err) {
     if (err.name === 'CastError') {
-      return res.status(badRequest).send({ message: 'Ошибка в запросе' });
+      return next(new BadRequest('Ошибка в запросе'));
     }
-    return res.status(internalServerError).send({ message: 'Произошла ошибка на сервере' });
+    return next(new InternalServerError('Произошла ошибка на сервере'));
   }
 };
 
