@@ -14,14 +14,14 @@ const createUser = async (req, res, next) => {
     const {
       name, about, avatar, email, password,
     } = req.body;
-    const hash = bcrypt.hash(password, 10);
-    const user = await new User({
+    const hash = await bcrypt.hash(password, 10);
+    const user = await User.create({
       name, about, avatar, email, password: hash,
-    }).save();
+    });
     return res.status(201).send(user);
   } catch (err) {
     if (err.name === 'ValidationError') {
-      return next(new NotFound('Ошибка в запросе'));
+      return next(new BadRequest('Ошибка в запросе'));
     }
     if (err.code === 11000) {
       return next(new Conflict('Пользователь с таким email уже зарегистрирован'));

@@ -10,6 +10,12 @@ const userSchema = new mongoose.Schema({
   link: {
     type: String,
     required: true,
+    validate: {
+      validator(v) {
+        return /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/.test(v);
+      },
+      message: 'link is not valid',
+    },
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,

@@ -32,13 +32,13 @@ const deleteCard = async (req, res, next) => {
   const { cardId } = req.params;
   const userId = req.user._id;
   try {
-    const card = await Card.findByIdAndDelete(cardId);
+    const card = await Card.findById(cardId);
     if (!card) {
       return next(new NotFound('Карточка не существует'));
-    }
-    if (userId !== card.owner.toString()) {
+    } if (userId !== card.owner.toString()) {
       return next(Forbidden('Нет прав на удаление карточки'));
     }
+    await Card.findByIdAndDelete(cardId);
     return res.status(200).send(card);
   } catch (err) {
     if ((err.name === 'ValidationError') || (err.kind === 'ObjectID')) {
@@ -48,7 +48,7 @@ const deleteCard = async (req, res, next) => {
   }
 };
 
-const putLike = async (res, req, next) => {
+const putLike = async (req, res, next) => {
   try {
     const { cardId } = req.params;
     const like = await Card.findByIdAndUpdate(
@@ -68,7 +68,7 @@ const putLike = async (res, req, next) => {
   }
 };
 
-const deleteLike = async (res, req, next) => {
+const deleteLike = async (req, res, next) => {
   try {
     const { cardId } = req.params;
     const delLike = await Card.findByIdAndUpdate(
