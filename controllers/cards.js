@@ -41,7 +41,7 @@ const deleteCard = async (req, res, next) => {
     await Card.findByIdAndDelete(cardId);
     return res.status(200).send(card);
   } catch (err) {
-    if ((err.name === 'ValidationError') || (err.kind === 'ObjectID')) {
+    if ((err.kind === 'ObjectID')) {
       return next(new BadRequest('Ошибка в запросе'));
     }
     return next(new InternalServerError('Произошла ошибка на сервере'));
